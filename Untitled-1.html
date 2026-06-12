@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Estate Property Portal</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+}
+
+header{
+    background:#2c3e50;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.container{
+    display:flex;
+    gap:20px;
+    padding:20px;
+}
+
+.sidebar{
+    width:250px;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.sidebar h3{
+    margin-bottom:15px;
+}
+
+.sidebar label{
+    display:block;
+    margin-top:15px;
+    font-weight:bold;
+}
+
+.sidebar input,
+.sidebar select{
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+}
+
+.main{
+    flex:1;
+}
+
+.map{
+    height:300px;
+    background:#d6eaf8;
+    border-radius:10px;
+    position:relative;
+    margin-bottom:20px;
+    overflow:hidden;
+}
+
+.map h2{
+    text-align:center;
+    padding-top:20px;
+    color:#2c3e50;
+}
+
+.pin{
+    position:absolute;
+    font-size:30px;
+}
+
+.pin1{
+    top:70px;
+    left:120px;
+}
+
+.pin2{
+    top:150px;
+    left:350px;
+}
+
+.pin3{
+    top:80px;
+    left:600px;
+}
+
+.properties{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.card img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+
+.card-content{
+    padding:15px;
+}
+
+.card h3{
+    margin-bottom:10px;
+}
+
+.price{
+    color:green;
+    font-size:20px;
+    font-weight:bold;
+}
+
+@media(max-width:768px){
+    .container{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+    }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🏠 Real Estate Property Portal</h1>
+</header>
+
+<div class="container">
+
+    <div class="sidebar">
+        <h3>Filters</h3>
+
+        <label>Search Location</label>
+        <input type="text" id="locationSearch" placeholder="Enter location">
+
+        <label>Maximum Price (Lakhs)</label>
+        <input type="range" id="priceRange" min="20" max="150" value="150">
+        <p>₹ <span id="priceValue">150</span> Lakhs</p>
+
+        <label>BHK</label>
+        <select id="bhkFilter">
+            <option value="all">All</option>
+            <option value="1">1 BHK</option>
+            <option value="2">2 BHK</option>
+            <option value="3">3 BHK</option>
+            <option value="4">4 BHK</option>
+        </select>
+    </div>
+
+    <div class="main">
+
+        <div class="map">
+            <h2>Property Map View</h2>
+
+            <div class="pin pin1">📍</div>
+            <div class="pin pin2">📍</div>
+            <div class="pin pin3">📍</div>
+        </div>
+
+        <div class="properties" id="propertyContainer"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+const properties = [
+
+{
+name:"Luxury Villa",
+location:"Bangalore",
+price:120,
+bhk:4,
+image:"https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600"
+},
+
+{
+name:"Modern Apartment",
+location:"Hyderabad",
+price:60,
+bhk:2,
+image:"https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600"
+},
+
+{
+name:"Premium House",
+location:"Chennai",
+price:90,
+bhk:3,
+image:"https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600"
+},
+
+{
+name:"Family Home",
+location:"Mumbai",
+price:140,
+bhk:4,
+image:"https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600"
+},
+
+{
+name:"Budget Flat",
+location:"Pune",
+price:35,
+bhk:1,
+image:"https://images.unsplash.com/photo-1494526585095-c41746248156?w=600"
+},
+
+{
+name:"Green Residency",
+location:"Bangalore",
+price:75,
+bhk:3,
+image:"https://images.unsplash.com/photo-1448630360428-65456885c650?w=600"
+}
+];
+
+const container = document.getElementById("propertyContainer");
+
+function displayProperties(list){
+
+container.innerHTML="";
+
+list.forEach(property=>{
+
+container.innerHTML += `
+<div class="card">
+
+<img src="${property.image}" alt="Property">
+
+<div class="card-content">
+<h3>${property.name}</h3>
+<p>📍 ${property.location}</p>
+<p>${property.bhk} BHK</p>
+<p class="price">₹ ${property.price} Lakhs</p>
+</div>
+
+</div>
+`;
+
+});
+
+}
+
+displayProperties(properties);
+
+const locationSearch =
+document.getElementById("locationSearch");
+
+const priceRange =
+document.getElementById("priceRange");
+
+const bhkFilter =
+document.getElementById("bhkFilter");
+
+priceRange.addEventListener("input",()=>{
+
+document.getElementById("priceValue").textContent =
+priceRange.value;
+
+filterProperties();
+
+});
+
+locationSearch.addEventListener("input",
+filterProperties);
+
+bhkFilter.addEventListener("change",
+filterProperties);
+
+function filterProperties(){
+
+let location =
+locationSearch.value.toLowerCase();
+
+let maxPrice =
+parseInt(priceRange.value);
+
+let bhk =
+bhkFilter.value;
+
+const filtered = properties.filter(property=>{
+
+let matchLocation =
+property.location.toLowerCase().includes(location);
+
+let matchPrice =
+property.price <= maxPrice;
+
+let matchBhk =
+bhk === "all" || property.bhk == bhk;
+
+return matchLocation &&
+matchPrice &&
+matchBhk;
+
+});
+
+displayProperties(filtered);
+
+}
+
+</script>
+
+</body>
+</html>
